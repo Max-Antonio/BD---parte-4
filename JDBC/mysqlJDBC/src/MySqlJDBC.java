@@ -1,4 +1,7 @@
 import java.sql.*;
+import java.util.Scanner;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 
 public class MySqlJDBC {
@@ -25,24 +28,49 @@ public class MySqlJDBC {
         conexao = DriverManager.getConnection(url, usuario, senha);
     }
 
+
+    public void imprimeResultSet(ResultSet rs) throws SQLException {
+        ResultSetMetaData meta = rs.getMetaData();
+        for (int i = 1; i <= meta.getColumnCount(); i++) {
+            System.out.print(meta.getColumnLabel(i) + ": " + meta.getColumnTypeName(i) + "\t");
+        }
+        System.out.println();
+        while(rs.next()) {
+            for (int i = 1; i <= meta.getColumnCount(); i++) {
+                System.out.print(rs.getString(i) + "\t");
+            }
+            System.out.println();
+        }
+    }
+
     public void consulta() throws SQLException {
         Statement st = conexao.createStatement();
         String sql = "SELECT * FROM MyBook.Livro";
         ResultSet rs = st.executeQuery(sql);
-        while(rs.next()) {
-            String ISBN, nome, qtd_leitores, existe_no_sistema, id_editora, id_administrador;
-            System.out.println(rs.getRow() + " ");
-            ISBN = rs.getString(1);
-            nome = rs.getString(2);
-            qtd_leitores = Integer.toString(rs.getInt(3));
-            existe_no_sistema = Integer.toString(rs.getInt(4));
-            id_editora = rs.getString(5);
-            id_administrador = rs.getString(6);
-            System.out.println(ISBN + "\t" + nome + "\t" + qtd_leitores + "\t" + existe_no_sistema + "\t" + id_editora + "\t" + id_administrador);
-        }
+        imprimeResultSet(rs);
     }
 
-    public void inserirLinha() {
+    public void fecharConexao() throws SQLException {
+        conexao.close();
+    }
+
+    public void inserirLinha() throws SQLException {
+        String ISBN, nome, sql;
+        int qtd_leitores, existe_sistema; 
+        Statement st = conexao.createStatement();
+        Scanner sc = new Scanner(System.in);
+        System.out.print("insira o ISBN do livro: ");
+        ISBN = sc.nextLine();
+        System.out.print("insira o nome do livro: ");
+        nome = sc.nextLine();
+        System.out.print("insira a quantidade de leitores do livro: ");
+        qtd_leitores = sc.nextInt();
+        System.out.print("insira se o livro existe no sistema (0: nao, 1:sim): ");
+        existe_sistema = sc.nextInt();
+
+        sql = "INSERT INTO MyBook.Livro (ISBN, nome, quantidade_leitores, existe_no_sistema, id_editora, id_administrador) VALUES(" + "\""+ISBN+"\"," + "\""+nome+"\"," + "\""+Integer.toString(qtd_leitores)+"\"," + "\""+Integer.toString(existe_sistema)+"\", 1, 1)";
+        st.executeUpdate(sql);
+        System.out.println("Insercao feita com sucesso.");
     }
 
     public void transacao() {
