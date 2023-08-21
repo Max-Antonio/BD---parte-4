@@ -55,22 +55,20 @@ public class MySqlJDBC {
     }
 
     public void inserirLinha() throws SQLException {
-        String ISBN, nome, sql;
-        int qtd_leitores, existe_sistema; 
+        int numLinhas = 0;
         Statement st = conexao.createStatement();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("insira o ISBN do livro: ");
-        ISBN = sc.nextLine();
-        System.out.print("insira o nome do livro: ");
-        nome = sc.nextLine();
-        System.out.print("insira a quantidade de leitores do livro: ");
-        qtd_leitores = sc.nextInt();
-        System.out.print("insira se o livro existe no sistema (0: nao, 1:sim): ");
-        existe_sistema = sc.nextInt();
 
-        sql = "INSERT INTO MyBook.Livro (ISBN, nome, quantidade_leitores, existe_no_sistema, id_editora, id_administrador) VALUES(" + "\""+ISBN+"\"," + "\""+nome+"\"," + "\""+Integer.toString(qtd_leitores)+"\"," + "\""+Integer.toString(existe_sistema)+"\", 1, 1)";
-        st.executeUpdate(sql);
-        System.out.println("Insercao feita com sucesso.");
+        String sql1 = "SELECT * FROM MyBook.Livro";
+        ResultSet rs = st.executeQuery(sql1);
+        while(rs.next()) {
+            numLinhas++;
+        }
+
+        String ISBN = "2000" + Integer.toString(numLinhas);
+
+        String sql2 = "INSERT INTO MyBook.Livro (ISBN, nome, quantidade_leitores, existe_no_sistema, id_editora, id_administrador) VALUES(\"" + ISBN + "\", \"Livro" + ISBN +"\",\"10\",\"1\" ,\"1\", \"1\")";
+        st.executeUpdate(sql2);
+        System.out.println("\nInsercao feita com sucesso.\n");
     }
 
     public void transacao() {
