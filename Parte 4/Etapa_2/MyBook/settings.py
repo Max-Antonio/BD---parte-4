@@ -76,9 +76,6 @@ WSGI_APPLICATION = 'MyBook.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'OPTIONS': {
-            'options': '-c search_path=MyBook'
-        },
         'NAME': 'postgres',
         'USER': 'postgre',
         'PASSWORD': 'bancodedadosapi',
