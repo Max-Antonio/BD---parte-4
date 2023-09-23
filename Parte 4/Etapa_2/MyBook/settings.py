@@ -75,8 +75,15 @@ WSGI_APPLICATION = 'MyBook.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'OPTIONS': {
+            'options': '-c search_path=MyBook'
+        },
+        'NAME': 'postgres',
+        'USER': 'postgre',
+        'PASSWORD': 'bancodedadosapi',
+        'HOST': 'db-api.cwuad8hd1qel.us-east-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
