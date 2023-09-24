@@ -1,4 +1,7 @@
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 from .models import Administrador, Editora, Livro, Leitor, Livros_Leitor
 from .serializers import AdministradorSerializer, EditoraSerializer, LivroSerializer, LeitorSerializer, Livros_LeitorSerializer
 
@@ -12,10 +15,17 @@ def editora_list(request):
     serializer = EditoraSerializer(editoras, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+@api_view(['GET', 'POST'])
 def livro_list(request):
-    livros = Livro.objects.all()
-    serializer = LivroSerializer(livros, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        livros = Livro.objects.all()
+        serializer = LivroSerializer(livros, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        serializer = LivroSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 def leitor_list(request):
     leitores = Leitor.objects.all()
