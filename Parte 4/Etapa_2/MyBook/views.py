@@ -27,10 +27,17 @@ def livro_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_view(['GET', 'POST'])
 def leitor_list(request):
-    leitores = Leitor.objects.all()
-    serializer = LeitorSerializer(leitores, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        leitores = Leitor.objects.all()
+        serializer = LeitorSerializer(leitores, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        serializer = LeitorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 def livros_leitor_list(request):
     livros_leitores = Livros_Leitor.objects.all()
