@@ -27,6 +27,26 @@ def livro_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_view(['PUT', 'DELETE', 'GET'])
+def livro_detalhe(request, isbn):
+    try:
+        livro = Livro.objects.get(pk=isbn)
+    except Livro.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'PUT':
+        serializer = LivroSerializer(livro, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'DELETE':
+        livro.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'GET':
+        serializer = LivroSerializer(livro)
+        return Response(serializer.data)
+    
 @api_view(['GET', 'POST'])
 def leitor_list(request):
     if request.method == 'GET':

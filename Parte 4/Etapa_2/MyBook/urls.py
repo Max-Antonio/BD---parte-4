@@ -23,6 +23,7 @@ urlpatterns = [
     path('administradores/', views.administrador_list),
     path('editoras/', views.editora_list),
     path('livros/', views.livro_list),
+    path('livros/<int:isbn>', views.livro_detalhe),
     path('leitores', views.leitor_list),
-    path('livros_leitores', views.livros_leitor_list)
+    path('livros_leitores', views.livros_leitor_list),
 ]
