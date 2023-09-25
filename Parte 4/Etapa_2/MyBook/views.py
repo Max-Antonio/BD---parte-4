@@ -5,15 +5,29 @@ from rest_framework.decorators import api_view
 from .models import Administrador, Editora, Livro, Leitor, Livros_Leitor
 from .serializers import AdministradorSerializer, EditoraSerializer, LivroSerializer, LeitorSerializer, Livros_LeitorSerializer
 
+@api_view(['GET', 'POST'])
 def administrador_list(request):
-    administradores = Administrador.objects.all()
-    serializer = AdministradorSerializer(administradores, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        administradores = Administrador.objects.all()
+        serializer = AdministradorSerializer(administradores, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        serializer = AdministradorSerializer(data=request.data)
+        if serializer.is_valis():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_view(['GET', 'POST'])
 def editora_list(request):
-    editoras = Editora.objects.all()
-    serializer = EditoraSerializer(editoras, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        editoras = Editora.objects.all()
+        serializer = EditoraSerializer(editoras, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        serializer = EditoraSerializer(data=request.data)
+        if serializer.is_valis():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)   
 
 @api_view(['GET', 'POST'])
 def livro_list(request):
