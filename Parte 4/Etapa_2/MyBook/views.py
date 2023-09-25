@@ -59,6 +59,26 @@ def leitor_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def leitor_detalhe(request, cpf):
+    try:
+        leitor = Leitor.objects.get(pk=cpf)
+    except Leitor.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = LeitorSerializer(leitor, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'DELETE':
+        leitor.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'GET':
+        serializer = LeitorSerializer(leitor)
+        return Response(serializer.data)
+    
 def livros_leitor_list(request):
     livros_leitores = Livros_Leitor.objects.all()
     serializer = Livros_LeitorSerializer(livros_leitores, many=True)
