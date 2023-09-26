@@ -27,10 +27,10 @@ class Leitor(models.Model):
 class Livros_Leitor(models.Model):
     cpf = models.ForeignKey(Leitor, on_delete=models.CASCADE) #chave estrangeira, chave primária
     ISBN = models.ForeignKey(Livro, on_delete=models.CASCADE) #chave estrangeira, chave primária
-    livro_lido = models.CharField(max_length=45)
-    livro_favorito = models.CharField(max_length=45)
-    livro_em_progresso = models.CharField(max_length=45)
-    livro_pretende_ler = models.CharField(max_length=45)
+    livro_lido = models.BooleanField(null=False)
+    livro_favorito = models.BooleanField(null=False)
+    livro_em_progresso = models.BooleanField(null=False)
+    livro_pretende_ler = models.BooleanField(null=False)
     class Meta:
         constraints = [
             models.UniqueConstraint(

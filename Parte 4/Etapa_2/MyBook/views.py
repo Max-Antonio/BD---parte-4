@@ -13,7 +13,7 @@ def administrador_list(request):
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'POST':
         serializer = AdministradorSerializer(data=request.data)
-        if serializer.is_valis():
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -25,7 +25,7 @@ def editora_list(request):
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'POST':
         serializer = EditoraSerializer(data=request.data)
-        if serializer.is_valis():
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)   
 
@@ -92,8 +92,34 @@ def leitor_detalhe(request, cpf):
     if request.method == 'GET':
         serializer = LeitorSerializer(leitor)
         return Response(serializer.data)
-    
+
+@api_view(['GET', 'POST'])
 def livros_leitor_list(request):
-    livros_leitores = Livros_Leitor.objects.all()
-    serializer = Livros_LeitorSerializer(livros_leitores, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        livros_leitores = Livros_Leitor.objects.all()
+        serializer = Livros_LeitorSerializer(livros_leitores, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        serializer = Livros_LeitorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+@api_view(['GET', 'PUT', 'DELETE'])
+def livros_leitor_detalhe(request, id):
+    try:
+        livro_leitor = Livros_Leitor.objects.get(pk=id)
+    except Leitor.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'PUT':
+        serializer = Livros_LeitorSerializer(livro_leitor, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'DELETE':
+        livro_leitor.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'GET':
+        serializer = LeitorSerializer(livro_leitor)
+        return Response(serializer.data)
