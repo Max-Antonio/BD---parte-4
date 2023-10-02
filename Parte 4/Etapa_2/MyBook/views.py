@@ -108,7 +108,7 @@ def livros_leitor_list(request):
 def livros_leitor_detalhe(request, id):
     try:
         livro_leitor = Livros_Leitor.objects.get(pk=id)
-    except Leitor.DoesNotExist:
+    except Livros_Leitor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'PUT':
         serializer = Livros_LeitorSerializer(livro_leitor, data=request.data)
@@ -120,5 +120,5 @@ def livros_leitor_detalhe(request, id):
         livro_leitor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     if request.method == 'GET':
-        serializer = LeitorSerializer(livro_leitor)
+        serializer = Livros_LeitorSerializer(livro_leitor)
         return Response(serializer.data)
